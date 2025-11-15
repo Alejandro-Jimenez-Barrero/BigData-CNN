@@ -21,8 +21,8 @@ La aplicación detecta únicamente las siguientes clases relevantes para inventa
 inventario/
 │── index.html         # Aplicación web completa
 │── best.onnx          # Modelo YOLO exportado a ONNX
-│── best.h5            # Archivo de pesos en formato h5
-│── best_int8.tflite   # Modelo YOLO en formato TensorFlow Lite
+│── best.pt            # Archivo de pesos en formato pt (Pythorc).
+│── best_int8.tflite   # Modelo YOLO y archivo de pesos en formato TensorFlow Lite
 │── soportes
             └── │── Proyecto Inventario Big Data CNN.PDF # Informe corto del proyecto en formato PDF.
                 │── Salón005.jpeg                        # Imagen de prueba para probar la aplicación.
