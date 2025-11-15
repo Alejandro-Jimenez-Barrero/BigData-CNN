@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inventario del Salón - ONNX Runtime Web</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    #preview, #canvas { border: 1px solid #000; margin-top: 15px; }
+    #counts { margin-top: 20px; font-size: 18px; }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
+</head>
+<body>
+  <h2>Inventario del Salón (ONNX - salida 1×300×6)</h2>
+
+  <input type="file" id="fileInput" accept="image/*" />
+  <br />
+  <img id="preview" width="480" />
+  <canvas id="canvas" width="480"></canvas>
+
+  <div id="counts"></div>
+
+<script>
+// Las 22 clases en el orden especificado
+const LABELS = {
+  0: "dog", 1: "person", 2: "cat", 3: "tv", 4: "car",
+  5: "meatballs", 6: "marinara sauce", 7: "tomato soup", 8: "chicken noodle soup", 9: "french onion soup",
+  10: "chicken breast", 11: "ribs", 12: "pulled pork", 13: "hamburger", 14: "cavity",
+  15: "mouse", 16: "silla", 17: "sis", 18: "mesa", 19: "teclado", 20: "cpu", 21: "pantalla"
+};
+
+let session;
+
+async function loadModel() {
+  session = await ort.InferenceSession.create("best.onnx", {
+    executionProviders: ["wasm"],
+    graphOptimizationLevel: "all"
+  });
+  console.log("Modelo ONNX cargado (1×300×6 con NMS integrado)");
+}
+loadModel();
+
+// Procesar imagen a 320×320
+function preprocess(img) {
+  const canvas = document.createElement("canvas");
+  canvas.width = 320;
+  canvas.height = 320;
+  const ctx = canvas.getContext("2d");
+  ctx.drawImage(img, 0, 0, 320, 320);
+
+  const data = ctx.getImageData(0, 0, 320, 320).data;
+  const tensor = new Float32Array(1 * 3 * 320 * 320);
+  let idx = 0;
+
+  for (let c = 0; c < 3; c++) {
+    for (let i = c; i < data.length; i += 4) {
+      tensor[idx++] = data[i] / 255.0;
+    }
+  }
+
+  return new ort.Tensor("float32", tensor, [1, 3, 320, 320]);
+}
+
+// Ejecutar inferencia
+async function runInference(image) {
+  const inputTensor = preprocess(image);
+  const outputs = await session.run({ images: inputTensor });
+
+  // La salida es: 1 × 300 × 6  → [x1, y1, x2, y2, score, class]
+  const det = outputs[Object.keys(outputs)[0]].data;
+
+  const detections = [];
+  for (let i = 0; i < det.length; i += 6) {
+    const x1 = det[i + 0];
+    const y1 = det[i + 1];
+    const x2 = det[i + 2];
+    const y2 = det[i + 3];
+    const score = det[i + 4];
+    const cls = det[i + 5];
+
+    if (score > 0.30 && cls >= 0 && cls < 22) {
+      detections.push({ x1, y1, x2, y2, score, cls });
+    }
+  }
+
+  drawResults(image, detections);
+}
+
+// Dibujar cajas
+function drawResults(image, detections) {
+  const canvas = document.getElementById("canvas");
+  const ctx = canvas.getContext("2d");
+  canvas.width = image.width;
+  canvas.height = image.height;
+
+  ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+  const counts = {};
+  for (let i = 0; i < 22; i++) counts[i] = 0;
+
+  const filtered = detections.filter(det => [15, 16, 18, 19, 20, 21].includes(det.cls));
+
+  filtered.forEach(det => {
+    // Normalizado vs. píxeles → decidir escala correcta
+    const x1 = det.x1 <= 1 ? det.x1 * canvas.width : det.x1 * canvas.width / 320;
+    const y1 = det.y1 <= 1 ? det.y1 * canvas.height : det.y1 * canvas.height / 320;
+    const x2 = det.x2 <= 1 ? det.x2 * canvas.width : det.x2 * canvas.width / 320;
+    const y2 = det.y2 <= 1 ? det.y2 * canvas.height : det.y2 * canvas.height / 320;
+
+    counts[det.cls]++;
+
+    ctx.strokeStyle = "blue";
+    ctx.lineWidth = 2;
+    ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+
+    ctx.fillStyle = "blue";
+    ctx.font = "16px Arial";
+    ctx.fillText(`${LABELS[det.cls]} (${det.score.toFixed(2)})`, x1, y1 - 5);
+  });
+
+  let html = "<h3>Conteo de objetos detectados</h3>";
+  for (let i of [15, 16, 18, 19, 20, 21]) {
+    html += `${LABELS[i]}: ${counts[i]}<br>`;
+  }
+  document.getElementById("counts").innerHTML = html;
+}
+
+// Cargar imagen
+const fileInput = document.getElementById("fileInput");
+fileInput.addEventListener("change", (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const img = document.getElementById("preview");
+  img.src = URL.createObjectURL(file);
+  img.onload = () => runInference(img);
+});
+
+</script>
+</body>
+</html>
