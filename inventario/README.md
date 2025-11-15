@@ -1,4 +1,5 @@
-# Inventario Automático con YOLO + ONNX Runtime Web
+# Inventario Automático con CNN TensorFlow Lite
+# Alejandro Jiménez Barrero - Cód 20242695001
 
 Este módulo forma parte del proyecto **BigData-CNN** y permite realizar **detección de objetos en imágenes directamente desde el navegador**, sin necesidad de servidor, usando:
 
