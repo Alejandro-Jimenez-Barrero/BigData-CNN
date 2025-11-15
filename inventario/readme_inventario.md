@@ -8,13 +8,27 @@ Este módulo forma parte del proyecto **BigData-CNN** y permite realizar **detec
 
 La aplicación detecta únicamente las siguientes clases relevantes para inventario:
 
-- **15:** mouse
-- **16:** silla
-- **18:** mesa
-- **19:** teclado
-- **20:** cpu
-- **21:** pantalla
+- **0:** mouse
+- **1:** silla
+- **2:** mesa
+- **3:** teclado
+- **4:** cpu
+- **5:** pantalla
 
+
+## 📂 Estructura del módulo
+```
+inventario/
+│── index.html         # Aplicación web completa
+│── best.onnx          # Modelo YOLO exportado a ONNX
+│── best.h5            # Archivo de pesos en formato h5
+│── best_int8.tflite   # Modelo YOLO en formato TensorFlow Lite
+│── soportes
+            └── │── Proyecto Inventario Big Data CNN.PDF # Informe corto del proyecto en formato PDF.
+                │── Salón005.jpeg                        # Imagen de prueba para probar la aplicación.
+                │── Prueba_TFLite.ipynb                  # Notebook de google colab con el entrenamiento del modelo. 
+└── README.md          # Este archivo
+```
 ---
 
 ## 🚀 Características
@@ -23,32 +37,11 @@ La aplicación detecta únicamente las siguientes clases relevantes para inventa
 - Modelo ONNX ligero optimizado para WebAssembly.
 - Dibuja bounding boxes y genera un conteo automático.
 - Compatible con GitHub Pages.
-
+  
+## 🌐 IMPORTANTE  EJECUCIÓN EN GitHub Pages: 
 ---
-
-## 📂 Estructura del módulo
-```
-inventario/
-│── index.html         # Aplicación web completa
-│── best.onnx          # Modelo YOLO exportado a ONNX
-└── README.md          # Este archivo
-```
-
+LINK PARA EJECUCIÓN DE APLICATIVO: https://alejandro-jimenez-barrero.github.io/BigData-CNN/inventario/index.html
 ---
-
-## 🌐 Ejecución en GitHub Pages
-Cuando el repositorio tiene habilitado GitHub Pages, la aplicación puede ejecutarse directamente desde la web:
-
-```
-https://<USUARIO>.github.io/BigData-CNN/inventario/index.html
-```
-
-⚠ Asegúrate de que:
-- `index.html` y `best.onnx` estén en la misma carpeta.
-- El código use la ruta relativa:
-  ```js
-  ort.InferenceSession.create("best.onnx")
-  ```
 
 ---
 
@@ -68,7 +61,7 @@ http://localhost:8000/index.html
 
 ## 📸 Cómo usarlo
 1. Abre la página.
-2. Carga una imagen desde el botón.
+2. Carga una imagen desde el botón. Puede ser la imagen de prueba subida en la carpeta Soporte de este repositorio: Salón005.jpeg
 3. El sistema ejecuta el modelo ONNX.
 4. Se generan:
    - bounding boxes
@@ -94,18 +87,18 @@ http://localhost:8000/index.html
 - HTML5 + JavaScript
 - Canvas 2D API
 - YOLOv8 → ONNX (Ultralytics)
+- TensorFlow Lite fue usado, sin embargo, se tuvieron problemas de compatibilidad con navegadores.
 
 ---
 
 ## 📌 Notas
-- Si el modelo es mayor a 100MB, usa **Git LFS**.
-- El navegador debe permitir ejecución WASM (todos los modernos).
-- GitHub Pages puede tardar ~1 minuto en actualizar cambios.
+- El modelo es funcional y cumple con algunos de los requerimientos del proyecto.
+- Se ibtienen untajes de confianza aceptables con los onjetos identificados, sin embargo, aun faltan varios por ser identificados.
+- Como se ha mencionado, al realizar la exportación del modelo en formato tflite (TensorFlow Lite), se tuvieron problemas de compatibilidad en la ejecución de la aplicación web, por lo que se optó por la ejecución del modelo en formato ONNX, obteniendo los mismos resultados esperados que con el modelo tflite.
 
 ---
 
 ## 📧 Contacto
-Desarrollado por **Alejandro Jiménez Barrero** como parte del proyecto **BigData-CNN**.
+Desarrollado por **Alejandro Jiménez Barrero - cód 20242695001** como parte del proyecto final del módulo **BigData-CNN**.
 
-Si deseas extender la aplicación (detección en video, cámara web, dashboards, exportación CSV), puedo ayudarte.
 
