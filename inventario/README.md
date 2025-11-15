@@ -26,7 +26,8 @@ inventario/
 │── soportes
             └── │── Proyecto Inventario Big Data CNN.PDF # Informe corto del proyecto en formato PDF.
                 │── Salón005.jpeg                        # Imagen de prueba para probar la aplicación.
-                │── Prueba_TFLite.ipynb                  # Notebook de google colab con el entrenamiento del modelo. 
+                │── Prueba_TFLite.ipynb                  # Notebook de google colab con el entrenamiento del modelo.
+                │── proyecto_yolo.zip                    # Conjunto de datos de entrenamiento en formato YOLO. 
 └── README.md          # Este archivo
 ```
 ---
