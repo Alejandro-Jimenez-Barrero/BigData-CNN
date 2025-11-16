@@ -34,7 +34,7 @@ inventario/
 ---
 
 ## 🚀 Características
-- Ejecución **100% local en el navegador**.
+- Ejecución **local en el navegador**.
 - No requiere backend, Python ni servidores.
 - Modelo ONNX ligero optimizado para WebAssembly.
 - Dibuja bounding boxes y genera un conteo automático.
@@ -98,6 +98,14 @@ http://localhost:8000/index.html
 - Se ibtienen untajes de confianza aceptables con los onjetos identificados, sin embargo, aun faltan varios por ser identificados.
 - Como se ha mencionado, al realizar la exportación del modelo en formato tflite (TensorFlow Lite), se tuvieron problemas de compatibilidad en la ejecución de la aplicación web, por lo que se optó por la ejecución del modelo en formato ONNX, obteniendo los mismos resultados esperados que con el modelo tflite.
 
+---
+---
+## 📌 Anexos
+  - En la carpeta “soportes” del repositorio de Github, se encuentran los anexos técnicos del proyectos tales como:
+  - Notebook de desarrollo del modelo en .ipynb.
+  - Archivos de pesos en formato .pt, .tflite. dada la incompatibilidad con el modelo Yolo con Keras y tensorflow, no se adjunta el archivo de pesos en formato .h5.
+  - Informe del procedimiento.
+  - Imagen de prueba para probar el aplicativo web.
 ---
 
 ## 📧 Contacto
